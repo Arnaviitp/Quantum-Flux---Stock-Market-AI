@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantum Flux AI - Advanced Trading Intelligence</title>
+    <meta name="description"
+        content="AI-powered trading bot with market prediction, stock screening, and portfolio management for Indian markets">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Market Ticker -->
+        <div class="market-ticker-wrap">
+            <div class="market-ticker" id="market-ticker">
+                <span class="ticker-item">Loading Market Indices...</span>
+            </div>
+        </div>
+
+        <header>
+            <div class="logo">
+                <span class="logo-icon">⚡</span>
+                <h1>Quantum <span class="highlight">Flux AI</span></h1>
+                <span class="version-badge">v2.0</span>
+            </div>
+            <div class="header-right">
+                <button class="icon-btn" id="theme-toggle" title="Toggle Theme">🌙</button>
+                <button class="icon-btn" id="auto-refresh-toggle" title="Auto Refresh: OFF">
+                    <span id="refresh-icon">⏸️</span>
+                </button>
+                <div class="status-badge" id="status-badge">System Ready</div>
+            </div>
+        </header>
+
+        <!-- Navigation Tabs -->
+        <nav class="tabs">
+            <button class="tab-btn active" data-tab="analysis">📊 Analysis</button>
+            <button class="tab-btn" data-tab="predictor">🔮 Predictor</button>
+            <button class="tab-btn" data-tab="screener">🔍 Screener</button>
+            <button class="tab-btn" data-tab="portfolio">💼 Portfolio</button>
+            <button class="tab-btn" data-tab="alerts">🔔 Alerts</button>
+            <button class="tab-btn" data-tab="history">📈 History</button>
+        </nav>
+
+        <main>
+            <!-- TAB 1: Analysis -->
+            <section id="tab-analysis" class="tab-content active">
+                <!-- Top Section: Price & Signal -->
+                <section class="dashboard-grid">
+                    <div class="card price-card">
+                        <div class="symbol-selector">
+                            <select id="stock-select">
+                                <option value="^NSEI">NIFTY 50</option>
+                                <option value="^BSESN">SENSEX</option>
+                                <option value="RELIANCE.NS">Reliance Industries</option>
+                                <option value="TCS.NS">TCS</option>
+                                <option value="HDFCBANK.NS">HDFC Bank</option>
+                                <option value="INFY.NS">Infosys</option>
+                                <option value="ICICIBANK.NS">ICICI Bank</option>
+                                <option value="SBIN.NS">SBI</option>
+                                <option value="BHARTIARTL.NS">Bharti Airtel</option>
+                                <option value="ITC.NS">ITC</option>
+                                <option value="TATAMOTORS.NS">Tata Motors</option>
+                                <option value="LICI.NS">LIC India</option>
+                                <option value="WIPRO.NS">Wipro</option>
+                                <option value="HCLTECH.NS">HCL Tech</option>
+                                <option value="MARUTI.NS">Maruti Suzuki</option>
+                                <option value="BAJFINANCE.NS">Bajaj Finance</option>
+                                <option value="LT.NS">L&T</option>
+                            </select>
+                        </div>
+                        <div class="price-display">
+                            <span class="currency">₹</span>
+                            <span id="current-price">--.--</span>
+                        </div>
+                        <div class="price-change" id="price-change">Waiting for data...</div>
+                    </div>
+
+                    <div class="card signal-card" id="signal-card">
+                        <h2>AI Signal</h2>
+                        <div class="signal-content">
+                            <div class="signal-badge" id="signal-action">--</div>
+                            <div class="confidence-meter">
+                                <label>Confidence</label>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="confidence-fill" style="width: 0%"></div>
+                                </div>
+                                <span id="confidence-value">0%</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Indicators Dashboard -->
+                <section class="indicators-grid" id="indicators-grid">
+                    <div class="indicator-chip" id="chip-rsi">
+                        <span class="chip-label">RSI</span>
+                        <span class="chip-value" id="ind-rsi">--</span>
+                    </div>
+                    <div class="indicator-chip" id="chip-macd">
+                        <span class="chip-label">MACD</span>
+                        <span class="chip-value" id="ind-macd">--</span>
+                    </div>
+                    <div class="indicator-chip" id="chip-atr">
+                        <span class="chip-label">ATR</span>
+                        <span class="chip-value" id="ind-atr">--</span>
+                    </div>
+                    <div class="indicator-chip" id="chip-adx">
+                        <span class="chip-label">ADX</span>
+                        <span class="chip-value" id="ind-adx">--</span>
+                    </div>
+                    <div class="indicator-chip" id="chip-vwap">
+                        <span class="chip-label">VWAP</span>
+                        <span class="chip-value" id="ind-vwap">--</span>
+                    </div>
+                    <div class="indicator-chip" id="chip-stoch">
+                        <span class="chip-label">Stoch %K</span>
+                        <span class="chip-value" id="ind-stoch">--</span>
+                    </div>
+                    <div class="indicator-chip" id="chip-support">
+                        <span class="chip-label">Support</span>
+                        <span class="chip-value" id="ind-support">--</span>
+                    </div>
+                    <div class="indicator-chip" id="chip-resist">
+                        <span class="chip-label">Resistance</span>
+                        <span class="chip-value" id="ind-resist">--</span>
+                    </div>
+                </section>
+
+                <!-- Chart with selector -->
+                <section class="chart-section">
+                    <div class="card chart-card">
+                        <div class="chart-controls">
+                            <select id="chart-type-select">
+                                <option value="price">Price + SMA + Bollinger</option>
+                                <option value="macd">MACD</option>
+                                <option value="rsi">RSI</option>
+                                <option value="volume">Volume</option>
+                                <option value="stochastic">Stochastic</option>
+                            </select>
+                        </div>
+                        <canvas id="marketChart"></canvas>
+                    </div>
+                </section>
+
+                <!-- AI Reasoning -->
+                <section class="reasoning-section">
+                    <div class="card reasoning-card">
+                        <h2><span class="icon">🧠</span> AI Reasoning</h2>
+                        <p id="ai-reasoning" class="typing-effect">Initiate analysis to see AI's thought
+                            process...
+                        </p>
+                    </div>
+                </section>
+
+                <div class="actions">
+                    <button id="analyze-btn" class="btn-primary">
+                        <span class="btn-text">Analyze Market</span>
+                        <div class="btn-shine"></div>
+                    </button>
+                    <button id="export-btn" class="btn-secondary">
+                        📥 Export Data
+                    </button>
+                </div>
+            </section>
+
+            <!-- TAB 2: PREDICTOR (NEW) -->
+            <section id="tab-predictor" class="tab-content">
+                <div class="predictor-header">
+                    <div class="card">
+                        <h2>🔮 AI Market Predictor</h2>
+                        <p class="subtitle">Deep analysis with future price targets, risk assessment, and investment
+                            recommendations powered by AI</p>
+                        <div class="predictor-controls">
+                            <select id="predict-stock-select">
+                                <option value="RELIANCE.NS">Reliance Industries</option>
+                                <option value="TCS.NS">TCS</option>
+                                <option value="HDFCBANK.NS">HDFC Bank</option>
+                                <option value="INFY.NS">Infosys</option>
+                                <option value="ICICIBANK.NS">ICICI Bank</option>
+                                <option value="SBIN.NS">SBI</option>
+                                <option value="BHARTIARTL.NS">Bharti Airtel</option>
+                                <option value="ITC.NS">ITC</option>
+                                <option value="WIPRO.NS">Wipro</option>
+                                <option value="HCLTECH.NS">HCL Tech</option>
+                                <option value="MARUTI.NS">Maruti Suzuki</option>
+                                <option value="BAJFINANCE.NS">Bajaj Finance</option>
+                                <option value="LT.NS">L&T</option>
+                            </select>
+                            <button id="predict-btn" class="btn-primary">
+                                <span class="btn-text">🔮 Generate Prediction</span>
+                                <div class="btn-shine"></div>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Prediction Results -->
+                <div id="prediction-results" class="prediction-results" style="display: none;">
+                    <!-- Overview Row -->
+                    <div class="pred-overview-grid">
+                        <div class="card pred-overview-card">
+                            <div class="pred-metric">
+                                <span class="pred-label">Current Price</span>
+                                <span class="pred-value" id="pred-current-price">--</span>
+                            </div>
+                        </div>
+                        <div class="card pred-overview-card">
+                            <div class="pred-metric">
+                                <span class="pred-label">Overall Trend</span>
+                                <span class="pred-value pred-trend" id="pred-trend">--</span>
+                            </div>
+                        </div>
+                        <div class="card pred-overview-card">
+                            <div class="pred-metric">
+                                <span class="pred-label">Risk Level</span>
+                                <span class="pred-value" id="pred-risk">--</span>
+                            </div>
+                        </div>
+                        <div class="card pred-overview-card">
+                            <div class="pred-metric">
+                                <span class="pred-label">Recommendation</span>
+                                <span class="pred-value pred-recommendation" id="pred-recommendation">--</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Price Targets -->
+                    <div class="pred-targets-grid">
+                        <div class="card prediction-target-card">
+                            <h3>📅 1-Week Target</h3>
+                            <div class="target-price" id="pred-1w-price">--</div>
+                            <div class="target-range" id="pred-1w-range">Range: --</div>
+                            <div class="target-direction" id="pred-1w-dir">--</div>
+                            <div class="target-confidence">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="pred-1w-conf" style="width:0%"></div>
+                                </div>
+                                <span id="pred-1w-conf-val">0%</span>
+                            </div>
+                        </div>
+                        <div class="card prediction-target-card">
+                            <h3>📅 1-Month Target</h3>
+                            <div class="target-price" id="pred-1m-price">--</div>
+                            <div class="target-range" id="pred-1m-range">Range: --</div>
+                            <div class="target-direction" id="pred-1m-dir">--</div>
+                            <div class="target-confidence">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="pred-1m-conf" style="width:0%"></div>
+                                </div>
+                                <span id="pred-1m-conf-val">0%</span>
+                            </div>
+                        </div>
+                        <div class="card prediction-target-card">
+                            <h3>📅 3-Month Target</h3>
+                            <div class="target-price" id="pred-3m-price">--</div>
+                            <div class="target-range" id="pred-3m-range">Range: --</div>
+                            <div class="target-direction" id="pred-3m-dir">--</div>
+                            <div class="target-confidence">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="pred-3m-conf" style="width:0%"></div>
+                                </div>
+                                <span id="pred-3m-conf-val">0%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Key Levels & Risk Meter -->
+                    <div class="pred-details-grid">
+                        <div class="card">
+                            <h3>📊 Key Levels</h3>
+                            <div class="key-levels">
+                                <div class="level-row">
+                                    <span class="level-label">Best Entry Price</span>
+                                    <span class="level-value accent" id="pred-entry">--</span>
+                                </div>
+                                <div class="level-row">
+                                    <span class="level-label">Stop Loss</span>
+                                    <span class="level-value danger" id="pred-stoploss">--</span>
+                                </div>
+                                <div class="level-row support-level">
+                                    <span class="level-label">Support 1</span>
+                                    <span class="level-value" id="pred-sup1">--</span>
+                                </div>
+                                <div class="level-row support-level">
+                                    <span class="level-label">Support 2</span>
+                                    <span class="level-value" id="pred-sup2">--</span>
+                                </div>
+                                <div class="level-row support-level">
+                                    <span class="level-label">Support 3</span>
+                                    <span class="level-value" id="pred-sup3">--</span>
+                                </div>
+                                <div class="level-row resistance-level">
+                                    <span class="level-label">Resistance 1</span>
+                                    <span class="level-value" id="pred-res1">--</span>
+                                </div>
+                                <div class="level-row resistance-level">
+                                    <span class="level-label">Resistance 2</span>
+                                    <span class="level-value" id="pred-res2">--</span>
+                                </div>
+                                <div class="level-row resistance-level">
+                                    <span class="level-label">Resistance 3</span>
+                                    <span class="level-value" id="pred-res3">--</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <h3>⚡ Risk & Stats</h3>
+                            <div class="risk-stats">
+                                <div class="stat-row">
+                                    <span>Trend Strength</span>
+                                    <div class="stat-bar-container">
+                                        <div class="stat-bar" id="pred-trend-bar" style="width:0%"></div>
+                                    </div>
+                                    <span id="pred-trend-val">0/10</span>
+                                </div>
+                                <div class="stat-row">
+                                    <span>Risk Score</span>
+                                    <div class="stat-bar-container">
+                                        <div class="stat-bar risk-bar" id="pred-risk-bar" style="width:0%"></div>
+                                    </div>
+                                    <span id="pred-risk-val">0/10</span>
+                                </div>
+                                <div class="stat-row">
+                                    <span>RSI</span>
+                                    <span class="stat-value" id="pred-rsi-val">--</span>
+                                </div>
+                                <div class="stat-row">
+                                    <span>Volatility</span>
+                                    <span class="stat-value" id="pred-vol-val">--</span>
+                                </div>
+                                <div class="stat-row">
+                                    <span>7-Day Return</span>
+                                    <span class="stat-value" id="pred-7d-ret">--</span>
+                                </div>
+                                <div class="stat-row">
+                                    <span>30-Day Return</span>
+                                    <span class="stat-value" id="pred-30d-ret">--</span>
+                                </div>
+                                <div class="stat-row">
+                                    <span>Volume Ratio</span>
+                                    <span class="stat-value" id="pred-vol-ratio">--</span>
+                                </div>
+                                <div class="stat-row">
+                                    <span>Horizon</span>
+                                    <span class="stat-value" id="pred-horizon">--</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AI Analysis -->
+                    <div class="card pred-analysis-card">
+                        <h3>🧠 AI Deep Analysis</h3>
+                        <p id="pred-detailed-analysis" class="analysis-text">--</p>
+                        <div class="analysis-sections">
+                            <div class="analysis-section">
+                                <h4>📊 Indicators Summary</h4>
+                                <p id="pred-indicators-summary">--</p>
+                            </div>
+                            <div class="analysis-section">
+                                <h4>🚀 Catalysts</h4>
+                                <p id="pred-catalysts">--</p>
+                            </div>
+                            <div class="analysis-section">
+                                <h4>⚠️ Risks</h4>
+                                <p id="pred-risks">--</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 3: SCREENER (NEW) -->
+            <section id="tab-screener" class="tab-content">
+                <div class="card">
+                    <h2>🔍 Stock Screener</h2>
+                    <p class="subtitle">Scan the market for opportunities based on technical criteria</p>
+                    <div class="screener-controls">
+                        <select id="screener-criteria">
+                            <option value="momentum">🚀 Momentum (Trending Up)</option>
+                            <option value="oversold">📉 Oversold (RSI Low)</option>
+                            <option value="volume_surge">📊 Volume Surge</option>
+                        </select>
+                        <button id="screen-btn" class="btn-primary">
+                            <span class="btn-text">🔍 Scan Market</span>
+                            <div class="btn-shine"></div>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="screener-results" class="screener-results">
+                    <p class="empty-state">Select a criteria and scan the market to find opportunities!</p>
+                </div>
+            </section>
+
+            <!-- TAB 4: Portfolio -->
+            <section id="tab-portfolio" class="tab-content">
+                <div class="card">
+                    <h2>💼 Portfolio Management</h2>
+                    <div class="portfolio-summary" id="portfolio-summary">
+                        <div class="summary-item">
+                            <span class="label">Total Value:</span>
+                            <span class="value" id="total-value">₹0.00</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="label">Total P/L:</span>
+                            <span class="value" id="total-pl">₹0.00</span>
+                        </div>
+                    </div>
+
+                    <div class="portfolio-form">
+                        <input type="text" id="portfolio-symbol" placeholder="Symbol (e.g., RELIANCE.NS)">
+                        <input type="number" id="portfolio-quantity" placeholder="Quantity" min="1">
+                        <input type="number" id="portfolio-price" placeholder="Buy Price" step="0.01">
+                        <button class="btn-add" id="add-to-portfolio">Add to Portfolio</button>
+                    </div>
+
+                    <div class="portfolio-list" id="portfolio-list">
+                        <p class="empty-state">No holdings yet. Add stocks to your portfolio!</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 5: Alerts -->
+            <section id="tab-alerts" class="tab-content">
+                <div class="card">
+                    <h2>🔔 Price Alerts</h2>
+
+                    <div class="alert-form">
+                        <select id="alert-symbol">
+                            <option value="RELIANCE.NS">Reliance Industries</option>
+                            <option value="TCS.NS">TCS</option>
+                            <option value="HDFCBANK.NS">HDFC Bank</option>
+                            <option value="INFY.NS">Infosys</option>
+                            <option value="ICICIBANK.NS">ICICI Bank</option>
+                        </select>
+                        <select id="alert-type">
+                            <option value="above">Above</option>
+                            <option value="below">Below</option>
+                        </select>
+                        <input type="number" id="alert-price" placeholder="₹ Price" step="0.01">
+                        <button class="btn-add" id="add-alert">Create Alert</button>
+                    </div>
+
+                    <div class="alerts-list" id="alerts-list">
+                        <p class="empty-state">No active alerts. Create one to get notified!</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 6: History -->
+            <section id="tab-history" class="tab-content">
+                <div class="card">
+                    <h2>📈 Analysis History</h2>
+                    <div class="history-list" id="history-list">
+                        <p class="empty-state">No analysis history yet. Run your first analysis!</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Notification Toast -->
+        <div id="notification-toast" class="notification-toast"></div>
+
+        <!-- Footer -->
+        <footer class="site-footer">
+            <p>Created with <span class="heart">❤️</span> by <span class="footer-name">Arnav</span></p>
+        </footer>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+
+</html>
